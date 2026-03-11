@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>满屏爱心</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #222 0, #000 60%);
+      font-family: -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial;
+    }
+    .love-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      text-align: center;
+      z-index: 1;
+    }
+    .center-text h1 {
+      font-size: 28px;
+      letter-spacing: 4px;
+    }
+    .center-text p {
+      margin-top: 8px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .heart {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: #ff3b7d;
+      transform: rotate(45deg);
+      animation: floatUp linear forwards;
+      opacity: 0.9;
+    }
+    .heart:before,
+    .heart:after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: #ff3b7d;
+      border-radius: 50%;
+    }
+    .heart:before {
+      left: -8px;
+      top: 0;
+    }
+    .heart:after {
+      top: -8px;
+      left: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translate3d(0, 0, 0) scale(0.6) rotate(45deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate3d(0, -800px, 0) scale(1.4) rotate(45deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="love-container" id="love">
+    <div class="center-text">
+      <h1>希望小尹天天开心❤</h1>
+      <p>点一点屏幕，会有更多爱心哦</p>
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('love');
+    const colors = ['#ff3b7d', '#ff6b81', '#ffd4e5', '#ff9f1c', '#ff5e5b'];
+
+    function createHeart(x, y) {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+
+      const size = 12 + Math.random() * 18;
+      heart.style.width = size + 'px';
+      heart.style.height = size + 'px';
+
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      heart.style.background = color;
+      heart.style.setProperty('--heart-color', color);
+
+      const duration = 4 + Math.random() * 3;
+      heart.style.animationDuration = duration + 's';
+
+      const startX = x != null ? x : Math.random() * window.innerWidth;
+      const startY = y != null ? y : window.innerHeight + 40;
+      heart.style.left = startX + 'px';
+      heart.style.top = startY + 'px';
+
+      const drift = (Math.random() - 0.5) * 60;
+      heart.style.transform += ` translateX(${drift}px)`;
+
+      container.appendChild(heart);
+      setTimeout(() => {
+        container.removeChild(heart);
+      }, duration * 1000);
+    }
+
+    // 初始自动生成爱心
+    setInterval(() => {
+      createHeart();
+    }, 180);
+
+    // 点击或触摸屏幕时生成一簇爱心
+    function burst(e) {
+      const touch = e.touches ? e.touches[0] : e;
+      const x = touch.clientX;
+      const y = touch.clientY;
+      for (let i = 0; i < 12; i++) {
+        setTimeout(() => createHeart(x + (Math.random() - 0.5) * 40,
+                                     y + (Math.random() - 0.5) * 40), i * 40);
+      }
+    }
+
+    container.addEventListener('click', burst);
+    container.addEventListener('touchstart', burst);
+  </script>
+</body>
+</html>
